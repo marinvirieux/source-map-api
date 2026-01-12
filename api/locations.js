@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -13,13 +13,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { force } = req.query;
-    const now = Date.now();
     const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
     const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
 
     if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
-      throw new Error('Missing environment variables: AIRTABLE_TOKEN or AIRTABLE_BASE_ID');
+      throw new Error('Missing environment variables');
     }
 
     const airtableUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Lieu`;
@@ -34,16 +32,13 @@ export default async function handler(req, res) {
 
     if (!airtableResponse.ok) {
       const errorText = await airtableResponse.text();
-      throw new Error(`Airtable API error: ${airtableResponse.status} - ${errorText}`);
+      throw new Error(`Airtable error: ${airtableResponse.status}`);
     }
 
     const airtableData = await airtableResponse.json();
 
     const filtered = airtableData.records
-      .filter(record => {
-        const statusMapField = record.fields['Status Map'];
-        return statusMapField === 'Publié';
-      })
+      .filter(record => record.fields['Status Map'] === 'Publié')
       .map(record => ({
         id: record.id,
         fields: record.fields,
@@ -51,7 +46,6 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      source: 'airtable',
       count: filtered.length,
       data: filtered,
     });
@@ -63,4 +57,4 @@ export default async function handler(req, res) {
       data: [],
     });
   }
-}
+};
