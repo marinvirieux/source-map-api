@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       throw new Error('Missing environment variables: AIRTABLE_TOKEN or AIRTABLE_BASE_ID');
     }
 
-    const airtableUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Locations`;
+    const airtableUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Lieu`;
 
     const airtableResponse = await fetch(airtableUrl, {
       method: 'GET',
