@@ -1,13 +1,6 @@
 {
   "name": "source-map-api",
   "version": "1.0.0",
-  "description": "Airtable API for Source map",
-  "main": "api/locations.js",
-  "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'Building...'"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "description": "Airtable API",
+  "main": "index.js"
 }
