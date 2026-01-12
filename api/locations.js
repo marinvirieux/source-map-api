@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
     const data = await response.json();
 
     const filtered = data.records
-      .filter(r => r.fields['Status Map'] === 'Publié')
+      .filter(r => r.fields['Statut Map'] === 'Publié')
       .map(r => ({
         id: r.id,
         name: r.fields['Nom'] || '',
