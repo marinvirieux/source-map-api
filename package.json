@@ -1,6 +1,16 @@
 {
   "name": "source-map-api",
   "version": "1.0.0",
-  "description": "Airtable API",
-  "main": "index.js"
+  "description": "Airtable API proxy",
+  "main": "api/locations.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Serverless functions ready'"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "engines": {
+    "node": "18.x"
+  }
 }
