@@ -7,9 +7,6 @@
     "dev": "vercel dev",
     "build": "echo 'Serverless functions ready'"
   },
-  "dependencies": {
-    "node-fetch": "^2.6.7"
-  },
   "engines": {
     "node": "18.x"
   }
