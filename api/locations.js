@@ -26,14 +26,12 @@ module.exports = async (req, res) => {
     }
 
     const data = await response.json();
-
-    // Filter and map in one clean operation
+    
     const filtered = data.records
       .filter(record => record.fields['Statut Map'] === 'Publié')
       .map(record => {
         const r = record.fields;
         
-        // Clean images - remove empty/0 values
         const images = [
           r['Image 1 URL'],
           r['Image 2 URL'],
@@ -42,13 +40,11 @@ module.exports = async (req, res) => {
           r['Image 5 URL']
         ].filter(url => url && url !== '0' && url.trim() !== '');
 
-        // Handle recommendedBy which could be array or string
         let recommendedBy = [];
         if (r['By ?']) {
           recommendedBy = Array.isArray(r['By ?']) ? r['By ?'] : [r['By ?']];
         }
 
-        // Helper to get first value from linked fields
         const getFirst = (val) => {
           if (Array.isArray(val)) return val[0] || '';
           return val || '';
