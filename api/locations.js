@@ -16,19 +16,29 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing credentials' });
     }
 
-    const url = `https://api.airtable.com/v0/${baseId}/Lieu`;
-    
-    const response = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    // Fetch ALL records with pagination
+    let allRecords = [];
+    let offset = null;
 
-    if (!response.ok) {
-      return res.status(response.status).json({ error: 'Airtable error' });
-    }
+    do {
+      const url = `https://api.airtable.com/v0/${baseId}/Lieu${offset ? `?offset=${offset}` : ''}`;
+      
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-    const data = await response.json();
+      if (!response.ok) {
+        return res.status(response.status).json({ error: 'Airtable error' });
+      }
 
-    const filtered = data.records
+      const data = await response.json();
+      allRecords = allRecords.concat(data.records);
+      offset = data.offset; // If there are more pages, this will be set
+
+    } while (offset);
+
+    // Now filter and map
+    const filtered = allRecords
       .filter(record => {
         const status = record.fields['Statut Map'];
         return status && status.trim().toLowerCase() === 'publié';
@@ -36,15 +46,13 @@ module.exports = async (req, res) => {
       .map(record => {
         const r = record.fields;
         
-        // Helper to get first value from linked fields (arrays)
         const getFirst = (val) => {
           if (Array.isArray(val)) return val[0] || '';
           return val || '';
         };
 
-      
+  
 
-        // Parse Image Gallerie URLs - comma-separated string, return as array for map
         let images = [];
         if (r['Image Gallerie URLs']) {
           images = r['Image Gallerie URLs']
